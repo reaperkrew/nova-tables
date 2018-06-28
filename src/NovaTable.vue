@@ -75,7 +75,7 @@
                     </tr>
                 </thead>
                 <transition-group tag="tbody" class="tableBody" name="nova-rows">
-                    <tr v-for="item in pagedItems" :key="keyFor(item)">
+                    <tr v-for="item in pagedItems" :key="keyFor(item)" :style="getRowStyle(item)">
                         <td v-for="(name, field) in activeColumns" :class="'td-' + field + '-styles'" :ref="'cell.' + keyFor(item) + '.' + field">
                             <slot :name="field" :item="item">
                                 {{ valueFor(item, field) }}
@@ -170,6 +170,7 @@ export default {
         'name',
         'keyField',
         'tableCssClass',
+        'rowStyleConfig',
     ],
     data() {
         return {
@@ -367,6 +368,17 @@ export default {
         },
     },
     methods: {
+        getRowStyle(item) {
+            if (!this.rowStyleConfig || !this.rowStyleConfig || !item.rowFlag) {
+                return;
+            }
+
+            for (const flag in this.rowStyleConfig) {
+                if (item.rowFlag == flag) {
+                    return this.rowStyleConfig[flag];
+                }
+            }
+        },
         refreshSource() {
             if (this.blockRefresh) {
                 return;
